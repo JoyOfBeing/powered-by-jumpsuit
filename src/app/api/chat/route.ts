@@ -198,8 +198,81 @@ Here's everything you know:
 
 ${RFP_KNOWLEDGE}`;
 
+const CURATED_RESPONSES: Record<string, string> = {
+  "How does your independent model work?": `Good question. Here's the real answer: we're a creative agency that's run like a network, not a roster.
+
+Most agencies have employees sitting in chairs. We've got 200+ vetted freelancers — solopreneurs, small agency owners, master specialists — who collaborate on projects because they *want* to, not because it's their job title. That changes everything.
+
+**The bigger picture:** We're not just a creative agency. We're a future of work consultancy. We've been solving the "how do you actually run a distributed creative team" problem for 10 years. We literally built the systems, processes, and culture that make it work.
+
+**The tangible stuff:**
+- We've been fully remote and fully independent from day one (before it was cool).
+- We don't lock clients into contracts. We earn the right to work with you every single day. That's why 90% of clients keep coming back.
+- You work directly with the people doing the work — no account manager buffer zone. You get speed, agility, and actual connection.
+- We're transparent end-to-end. You'll know where things stand, where your budget is going, everything.
+- We show work early and iterate. No disappearing into a silo for two weeks.
+
+**The cultural stuff:**
+- Everyone here is already operating at a high level. We're not training people up; we're curating collaborators.
+- Our network is vetted for talent *and* ability to work together.
+- Producers run everything — they're the operational backbone. That means creatives stay focused on the work instead of managing logistics.
+
+There's a lot of agencies who do the things that we do. But there's no one else who does it like us.
+
+What matters most to you in a creative partner?`,
+
+  "Tell me about your network": `The Jumpsuit network is powered by 200+ invite-only, fully vetted freelancers. 99% of folks got here the same way: someone we trust said, "we need to work with this person."
+
+That's how we built this thing. We started by asking: who do you love to work with? Who would you trust in the trenches? Then we pulled them in. When we outgrew who we knew, we asked those people the same question. Over time, even some of our clients have joined the network.
+
+**Who's in it:**
+
+Entrepreneurial, senior level or higher collaborators who make our creative agency and future of work consultancy feel awesome.
+
+- Master generalists and master specialists. Big idea people down to the most detailed production design.
+- Many are solopreneurs and small agency owners — they bring both craft and ownership to every project.
+- CDs, ADs, Digital Designers (graphic, UX/UI, AI), Motion Designers (2D, 3D, CGI, AI), Copywriters, Content Creators, Producers, PMs, and full-service live action production
+- Business 3.0 consultants, EOS implementers, Facilitators, and Founders
+
+**What makes it different:**
+- Everyone is vetted for talent *and* collaboration. You don't just have to be great at what you do — you have to be great to work with.
+- We're not training people up. Everyone is already operating at a high level.
+- We have localized clusters in Cincinnati, NY, LA, SF, Chicago, and Denver — but we've been fully remote from day one.
+
+We're the agency clients call when "they need a guy." We probably have them. And if not, we can probably tap our network and find one fast.
+
+You can only move at the speed of trust. That's why we built the whole thing on it.`,
+
+  "What makes Jumpsuit different?": `Honestly? It's not any one thing. It's the whole system.
+
+We built an agency with zero employees and zero ads that completely runs itself. No offices, no overhead bloat, no traditional hierarchy. Just a self-organizing network of epic humans who know how to do great work together.
+
+And we designed it to be that way from day one.
+
+**Here's what that actually means for you:**
+- You work directly with the people doing the work. No layers, no telephone game.
+- We don't lock you into contracts. We earn it every day. That's why 90% of our clients keep coming back.
+- We become an extension of your team. One of our clients put it best: *"It feels more like a partnership — like somebody embedded in your team. Less transactional. They feel like people you'd want in the trenches with you."*
+- We show work early and iterate together. We're not secretive and we're not precious.
+- When a project wraps, we deliver a case study that tells the full story of how we got there — so you can justify your value and your budget.
+- And we'll set you up for next steps, even if that's not with us. We'll work ourselves out of a job if that's what's best for you.
+
+Jumpsuit is more than a creative agency. We're a future of work consultancy that's been inventing new models, processes, and tools for a decade. We didn't just adopt this way of working — we built it.
+
+There's a lot of agencies who do the things that we do. But there's no one else who does it like us.`,
+};
+
 export async function POST(request: Request) {
   const { messages, context } = await request.json();
+
+  // Check if the latest user message matches a curated response
+  const lastMessage = messages[messages.length - 1];
+  if (lastMessage?.role === "user" && messages.length === 1) {
+    const curated = CURATED_RESPONSES[lastMessage.content];
+    if (curated) {
+      return Response.json({ answer: curated });
+    }
+  }
 
   const fullSystem = context
     ? `${SYSTEM_PROMPT}\n\nADDITIONAL CONTEXT:\n${context}`
